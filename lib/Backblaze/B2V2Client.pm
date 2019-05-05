@@ -35,10 +35,7 @@ sub new {
 			timeout => 60,
 			autocheck => 0,
 			cookie_jar => {},
-			keep_alive => 1,
-			ssl_opts => {
-				verify_hostname => 0,
-			},
+			keep_alive => 1
 		),
 	}, $class;	
 
