@@ -35,7 +35,7 @@ sub new {
 			timeout => 60,
 			autocheck => 0,
 			cookie_jar => {},
-			keep_alive => 1
+			keep_alive => 1,
 		),
 	}, $class;	
 
@@ -620,52 +620,54 @@ Backblaze::B2V2Client - Client library for the Backblaze B2 Cloud Storage Servic
 
 =head1 SYNOPSIS
 
-use Backblaze::B2V2Client;
+	use Backblaze::B2V2Client;
 
-# create an API client object
-$b2client = Backblaze::B2V2Client->new(
-	$application_key_id, $application_key
-);
-# please encrypt/protect those keys when not in use!
+	# create an API client object
 
-# let's say we have a B2 bucket called 'GingerAnna' and a JPG called 'ginger_was_perfect.jpg'.
+	$b2client = Backblaze::B2V2Client->new(
+		$application_key_id, $application_key
+	);
 
-# upload a file from your file system
-$b2client->b2_upload_file(
-	'bucket_name' => 'GingerAnna', 
-	'file_location' => '/path/to/ginger_was_perfect.jpg'
-); 
+	# please encrypt/protect those keys when not in use!
 
-# upload a file you have in a scalar
-$b2client->b2_upload_file(
-	'bucket_name' => 'GingerAnna', 
-	'new_file_name' => 'ginger_was_perfect.jpg',
-	'file_contents' => $file_contents
-); 
-# B2 file ID (fGUID) is in $b2client->{b2_response}{'X-Bz-File-Id'}
+	# let's say we have a B2 bucket called 'GingerAnna' and a JPG called 'ginger_was_perfect.jpg'.
 
-# download that file to /opt/majestica/tmp
-$b2client->b2_download_file_by_name('GingerAnna','ginger_was_perfect.jpg','/opt/majestica/tmp');
+	# upload a file from your file system
+	$b2client->b2_upload_file(
+		'bucket_name' => 'GingerAnna', 
+		'file_location' => '/path/to/ginger_was_perfect.jpg'
+	); 
 
-# if you would rather download with the 84-character GUID
-$b2client->b2_download_file_by_id('X-Bz-File-Id GUID from above','/opt/majestica/tmp');
+	# upload a file you have in a scalar
+	$b2client->b2_upload_file(
+		'bucket_name' => 'GingerAnna', 
+		'new_file_name' => 'ginger_was_perfect.jpg',
+		'file_contents' => $file_contents
+	); 
+	# B2 file ID (fGUID) is in $b2client->{b2_response}{'X-Bz-File-Id'}
 
-# you can leave off the directory to just have the file contents into
-# $b2client->{b2_response}{file_contents}
+	# download that file to /opt/majestica/tmp
+	$b2client->b2_download_file_by_name('GingerAnna','ginger_was_perfect.jpg','/opt/majestica/tmp');
 
-# check the status of the last operation
-use Data::Dumper; # hello old friend
-if ($b2client->{current_status} eq 'OK') { 
+	# if you would rather download with the 84-character GUID
+	$b2client->b2_download_file_by_id('X-Bz-File-Id GUID from above','/opt/majestica/tmp');
+
+	# you can leave off the directory to just have the file contents into
+	# $b2client->{b2_response}{file_contents}
+
+	# check the status of the last operation
+	use Data::Dumper; # hello old friend
+	if ($b2client->{current_status} eq 'OK') { 
 	
-	# all is well -- what did we get?
-	print Dumper($b2client->{b2_response});
+		# all is well -- what did we get?
+		print Dumper($b2client->{b2_response});
 	
-} elsif ($b2client->{current_status} eq 'Error') { 
+	} elsif ($b2client->{current_status} eq 'Error') { 
 	
-	# what info do we have on this disaster?
-	print Dumper($b2client->{errors}[-1]);
+		# what info do we have on this disaster?
+		print Dumper($b2client->{errors}[-1]);
 
-}
+	}
 
 =head1 DESCRIPTION / SET UP
 
@@ -892,6 +894,27 @@ Example:
 You now have $b2client->{buckets}{'MyBucketName'}{bucket_id}
 
 See: https://www.backblaze.com/b2/docs/b2_list_buckets.html
+
+=head1 DEPENDENCIES
+
+This module requires:
+
+	Cpanel::JSON::XS
+	Digest::SHA
+	MIME::Base64
+	Path::Tiny
+	URI::Escape
+	WWW::Mechanize
+	LWP::Protocol::https
+	
+In order to get this to work properly on Ubuntu 18.04, I installed these
+system packages:
+
+	build-essential
+	zlib1g-dev
+	libssl-dev
+	cpanminus
+	perl-doc
 
 =head1 SEE ALSO
 

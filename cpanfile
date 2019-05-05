@@ -10,3 +10,4 @@ requires 'MIME::Base64', '3.15';
 requires 'Path::Tiny', '0.108';
 requires 'URI::Escape', '3.31';
 requires 'WWW::Mechanize', '1.91';
+requires 'LWP::Protocol::https','6.07';
