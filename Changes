@@ -2,6 +2,10 @@ Revision history for Perl extension Backblaze-B2V2Client
 
 {{$NEXT}}
 
+1.1 2019-05-09T04:06:37Z
+
+    - Auto-create option for b2_list_buckets
+
 1.0 2019-05-05T03:06:08Z
 
     - original version
