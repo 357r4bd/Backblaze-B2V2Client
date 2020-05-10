@@ -180,7 +180,7 @@ sub b2_upload_file {
 		$args{file_contents} = path( $args{file_location} )->slurp_raw;
 		
 		# if they didn't provide a file-name, use the one on this file
-		$args{new_file_name} = path( $args{file_location} )->basename;
+		$args{new_file_name} //= path( $args{file_location} )->basename;
 	}
 	
 	# were these file contents either provided or found?
