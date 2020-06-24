@@ -151,6 +151,10 @@ Example 2: Uploading when the file is loaded into a scalar:
                 'file_contents' => $file_contents
         );      
 
+NOTE: If you are going to use the 'file_contents' method, it's best
+to load the scalar using the 'slurp_raw' method in Path::Tiny.
+(I believe 'read_file' in File::Slurp will work, but have yet to test.)
+
 You can also pass a 'content-type' key with the MIME type for the new
 file.  The default is 'b2/auto'.
 

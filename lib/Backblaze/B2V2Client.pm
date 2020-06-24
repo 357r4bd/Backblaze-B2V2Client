@@ -180,7 +180,7 @@ sub b2_upload_file {
 		$args{file_contents} = path( $args{file_location} )->slurp_raw;
 		
 		# if they didn't provide a file-name, use the one on this file
-		$args{new_file_name} //= path( $args{file_location} )->basename;
+		$args{new_file_name} = path( $args{file_location} )->basename;
 	}
 	
 	# were these file contents either provided or found?
@@ -951,6 +951,8 @@ Paws::S3 - If using Backblaze's S3-compatible API.
 Eric Chernoff <eric@weaverstreet.net>
 
 Please send me a note with any bugs or suggestions.
+
+Thanks to ESTRABD for submitting a bugfix when using the 'file_contents' option in the b2_upload_file() method.
 
 =head1 LICENSE
 
