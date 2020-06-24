@@ -696,6 +696,17 @@ Key again, so copy it immediately.
 Please store the Application Key pair in a secure way, preferably encrypted 
 when not in use by your software.
 
+# NOTE: BACKBLAZE B2 IS NOW S3-COMPATIBLE
+
+Backblaze has added an S3-compatible API, which you can read about here:
+
+	https://www.backblaze.com/b2/docs/s3_compatible_api.html
+
+They are continuing to support their native B2 API, so I will continue
+to use and support this module.  I have not tested the S3 modules with
+Backblaze, but if you already have an S3 integration, it is work checking
+out how Paws::S3 or Awes::S3 works with Backblaze.
+
 =head1 METHODS
 
 =head2 new
@@ -932,6 +943,8 @@ system packages:
 B2 API Docs:  https://www.backblaze.com/b2/docs/
 
 Backblaze::B2 - V1 API Client for B2
+
+Paws::S3 - If using Backblaze's S3-compatible API.
 
 =head1 AUTHOR / BUGS
 
