@@ -4,7 +4,7 @@ Backblaze::B2V2Client - Client library for the Backblaze B2 Cloud Storage Servic
 
 # VERSION
 
-1.1 - Stable version.
+1.2 - Stable version.
 
 # SYNOPSIS
 

@@ -2,7 +2,7 @@ package Backblaze::B2V2Client;
 # API client library for V2 of the API to Backblaze B2 object storage
 # Allows for creating/deleting buckets, listing files in buckets, and uploading/downloading files
 
-$Backblaze::B2V2Client::VERSION = '1.1';
+$Backblaze::B2V2Client::VERSION = '1.2';
 
 # our dependencies:
 use Cpanel::JSON::XS;
@@ -650,6 +650,7 @@ Backblaze::B2V2Client - Client library for the Backblaze B2 Cloud Storage Servic
 		'file_contents' => $file_contents
 	); 
 	# B2 file ID (fGUID) is now in $b2client->{b2_response}{fileId}
+	# Best to load $file_contents via Path::Tiny's slurp_raw() method
 
 	# download that file to /opt/majestica/tmp
 	$b2client->b2_download_file_by_name('GingerAnna','ginger_was_perfect.jpg','/opt/majestica/tmp');
@@ -766,6 +767,10 @@ Example 2: Uploading when the file is loaded into a scalar:
 		'new_file_name' => 'ginger_was_perfect.jpg',
 		'file_contents' => $file_contents
 	); 	
+
+NOTE: If you are going to use the 'file_contents' method, it's best
+to load the scalar using the 'slurp_raw' method in Path::Tiny.
+(I believe 'read_file' in File::Slurp will work, but have yet to test.)
 
 You can also pass a 'content-type' key with the MIME type for the new
 file.  The default is 'b2/auto'.
