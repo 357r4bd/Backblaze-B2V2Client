@@ -65,7 +65,8 @@ sub b2_authorize_account {
 		$self->{api_url} = $self->{b2_response}{apiUrl};
 		$self->{account_authorization_token} = $self->{b2_response}{authorizationToken};
 		$self->{download_url} = $self->{b2_response}{downloadUrl};
-
+		# for uploading large files
+		$self->{recommended_part_size} = $self->{b2_response}{recommendedPartSize} || 104857600;
 		# ready!
 
 	# otherwise, not ready!
@@ -470,6 +471,122 @@ sub b2_delete_file_version {
 
 }
 
+# method to upload a large file (>100MB)
+sub b2_upload_large_file {
+	my $self = shift;
+	my (%args) = @_;
+	# this must include valid entries for 'new_file_name' and 'bucket_name'
+	# and it has to a valid location in 'file_location' (Do not load in file contents)
+	# also, you can include 'content_type' (which would be the MIME Type'
+	# if you do not want B2 to auto-determine the MIME/content-type
+
+	# did they provide a file location or path?
+	if ($args{file_location} && -e "$args{file_location}") {
+		# if they didn't provide a file-name, use the one on this file
+		$args{new_file_name} = path( $args{file_location} )->basename;
+	} else {
+		$self->error_tracker(qq{You must provide a valid 'file_location' arg for b2_upload_large_file().});
+		return;
+	}
+
+	# protect my sanity...
+	my ($bucket_name, $file_contents_part, $file_location, $large_file_id, $part_number, $remaining_file_size, $sha1_array, $size_sent, $stat, @sha1_array);
+	$file_location = $args{file_location};
+	$bucket_name = $args{bucket_name};
+
+	# must be 100MB or bigger
+	$stat = path($file_location)->stat;
+	if ($stat->size < $self->{recommended_part_size} ) {
+		$self->error_tracker(qq{Please use b2_upload_large_file() for files larger than $self->{recommended_part_size} .});
+		return;
+	}
+
+	# need a bucket name
+	if (!$bucket_name) {
+		$self->error_tracker(qq{You must provide a valid 'bucket_name' arg for b2_upload_large_file().});
+		return;
+	}
+
+	# default content-type
+	$args{content_type} ||= 'b2/x-auto';
+
+	# get the bucket ID
+	$self->b2_list_buckets();
+
+	# kick off the upload in the API
+	$self->b2_talker(
+		'url' => 'https://api.backblazeb2.com/b2api/v2/b2_start_large_file',
+		'authorization' => $self->{account_authorization_token},
+		'post_params' => {
+			'bucketId' => $self->{buckets}{$bucket_name}{bucket_id},
+			'fileName' => $args{new_file_name},
+			'contentType' => $args{content_type},
+		},
+	);
+
+	# open the large file
+	open(FH, $file_location);
+
+	# these are all needed for each b2_upload_part web call
+	$large_file_id = $self->{b2_response}{fileId};
+	$remaining_file_size = $stat->size;
+	$part_number = 1;
+
+	# cycle thru each chunk of the file
+	while ($remaining_file_size >= 0) {
+
+		# how much to send?
+		if ($remaining_file_size < $self->{recommended_part_size} ) {
+			$size_sent = $remaining_file_size;
+		} else {
+			$size_sent = $self->{recommended_part_size} ;
+		}
+
+		# get the next upload url for this part
+		$self->b2_talker(
+			'url' => 'https://api.backblazeb2.com/b2api/v2/b2_get_upload_part_url',
+			'authorization' => $self->{account_authorization_token},
+			'post_params' => {
+				'fileId' => $large_file_id,
+			},
+		);
+
+		# read in that section of the file and prep the SHA
+		sysread FH, $file_contents_part, $size_sent;
+		push(@$sha1_array,sha1_hex( $file_contents_part ));
+
+		# upload that part
+		$self->b2_talker(
+			'url' => $self->{b2_response}{uploadUrl},
+			'Authorization' => $self->{b2_response}{authorizationToken},
+			'X-Bz-Content-Sha1' => $sha1_array[-1],
+			'X-Bz-Part-Number' => $part_number,
+			'Content-Length' => $size_sent,
+			'file_contents' => $file_contents_part,
+		);
+
+		# advance
+		$part_number++;
+		$remaining_file_size =- $self->{recommended_part_size} ;
+	}
+
+	# close the file
+	close FH;
+
+	# and tell B2
+	$self->b2_talker(
+		'url' => 'https://api.backblazeb2.com/b2api/v2/b2_finish_large_file',
+		'authorization' => $self->{account_authorization_token},
+		'post_params' => {
+			'fileId' => $large_file_id,
+			'partSha1Array' => $sha1_array,
+		},
+	);
+
+	# phew, i'm tired...
+}
+
+
 # generic method to handle communication to B2
 sub b2_talker {
 	my $self = shift;
@@ -501,7 +618,7 @@ sub b2_talker {
 	}
 
 	# are we uploading a file?
-	if ($args{url} =~ /b2_upload_file/) {
+	if ($args{url} =~ /b2_upload_file|b2_upload_part/) {
 
 		# add the special headers
 		@header_keys = keys %{ $args{special_headers} };
@@ -990,7 +1107,7 @@ Thanks to ESTRABD for submitting a bugfix when using the 'file_contents' option 
 
 MIT License
 
-Copyright (c) 2019 Eric Chernoff
+Copyright (c) 2020 Eric Chernoff
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
