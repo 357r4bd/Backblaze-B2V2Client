@@ -1,5 +1,5 @@
 {
-   "abstract" : "Client library for the Backblaze B2 Cloud Storage Service V2 API.  ",
+   "abstract" : "Client library for the Backblaze B2 Cloud Storage Service V2 API.",
    "author" : [
       "/ BUGS"
    ],
