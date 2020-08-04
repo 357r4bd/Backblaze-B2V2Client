@@ -515,7 +515,7 @@ sub b2_upload_large_file {
 
 	# kick off the upload in the API
 	$self->b2_talker(
-		'url' => 'https://api.backblazeb2.com/b2api/v2/b2_start_large_file',
+		'url' => $self->{api_url}.'/b2api/v2/b2_start_large_file',
 		'authorization' => $self->{account_authorization_token},
 		'post_params' => {
 			'bucketId' => $self->{buckets}{$bucket_name}{bucket_id},
@@ -547,7 +547,7 @@ sub b2_upload_large_file {
 
 		# get the next upload url for this part
 		$self->b2_talker(
-			'url' => 'https://api.backblazeb2.com/b2api/v2/b2_get_upload_part_url',
+			'url' => $self->{api_url}.'/b2api/v2/b2_get_upload_part_url',
 			'authorization' => $self->{account_authorization_token},
 			'post_params' => {
 				'fileId' => $large_file_id,
