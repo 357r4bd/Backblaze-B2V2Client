@@ -511,7 +511,7 @@ sub b2_upload_large_file {
 	$args{content_type} ||= 'b2/x-auto';
 
 	# get the bucket ID
-	$self->b2_list_buckets();
+	$self->b2_list_buckets($bucket_name);
 
 	# kick off the upload in the API
 	$self->b2_talker(
@@ -524,11 +524,14 @@ sub b2_upload_large_file {
 		},
 	);
 
-	# open the large file
-	open(FH, $file_location);
 
 	# these are all needed for each b2_upload_part web call
 	$large_file_id = $self->{b2_response}{fileId};
+	return if !$large_file_id; # there was an error in the request
+
+	# open the large file
+	open(FH, $file_location);
+
 	$remaining_file_size = $stat->size;
 	$part_number = 1;
 
