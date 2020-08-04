@@ -60,7 +60,7 @@ Backblaze::B2V2Client - Client library for the Backblaze B2 Cloud Storage Servic
 
 # DESCRIPTION / SET UP
 
-This module should help you create buckets and store files in the
+This module should help you create buckets and store/retrieve files in the
 Backblaze B2 cloud storage service using V2 of their API.
 
 Backblaze makes it easy to sign up for B2 from here:
@@ -80,7 +80,7 @@ Key again, so copy it immediately.
 Please store the Application Key pair in a secure way, preferably encrypted
 when not in use by your software.
 
-\# NOTE: BACKBLAZE B2 IS NOW S3-COMPATIBLE
+## BackBlaze B2 also has a S3-compatible API
 
 Backblaze has added an S3-compatible API, which you can read about here:
 
@@ -88,8 +88,23 @@ Backblaze has added an S3-compatible API, which you can read about here:
 
 They are continuing to support their native B2 API, so I will continue
 to use and support this module.  I have not tested the S3 modules with
-Backblaze, but if you already have an S3 integration, it is work checking
-out how Paws::S3 or Awes::S3 works with Backblaze.
+Backblaze, but if you already have an S3 integration, it is worth
+checking out how Paws::S3 or Awes::S3 works with Backblaze.
+
+## Testing Your Credentials
+
+During install, this module will attempt to connect to B2 and download
+a 16KB file into memory. To test using your B2 account
+credentials, set these environmental varables prior to attempting
+to install:
+
+        B2_APP_KEY_ID - The application key ID for the key you wish to test.
+        B2_APP_KEY - The application key -- is never displayed in the B2 UI.
+        B2_ACCT_ID - Your account ID; will be the ID of your master key
+        B2_TEST_FILE_ID: The long (75+ char) GUID for your target file.
+
+The GUID for a file is displayed when you click on that file's name
+in the 'Browse Files' section of the B2 UI.
 
 # METHODS
 
@@ -346,7 +361,7 @@ Thanks to ESTRABD for submitting a bugfix when using the 'file\_contents' option
 
 MIT License
 
-Copyright (c) 2019 Eric Chernoff
+Copyright (c) 2020 Eric Chernoff
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
