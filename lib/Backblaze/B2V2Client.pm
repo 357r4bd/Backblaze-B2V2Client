@@ -928,6 +928,20 @@ in $b2client->{b2_response}{fileId} .
 
 See: https://www.backblaze.com/b2/docs/b2_upload_file.html
 
+=head2 b2_upload_large_file
+
+Uploads a large file into B2.  Recommended for uploading files larger
+than 100MB. Accepts a hash of arguments, which
+must include the name of the destination bucket in 'bucket_name'
+and the complete file path of the file in 'file_location'.
+
+Example:
+
+	$b2client->b2_upload_large_file(
+		'bucket_name' => 'GingerAnna',
+		'file_location' => '/opt/majestica/tmp/gingers_whole_life_story.mp4',
+	);
+
 =head2 b2_list_file_names
 
 Retrieves an array of file information hashes for a given bucket name.
