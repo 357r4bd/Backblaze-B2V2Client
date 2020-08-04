@@ -4,13 +4,13 @@
       "/ BUGS"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.9, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.10, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "mit"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "Backblaze-B2V2Client",
    "no_index" : {
@@ -77,6 +77,6 @@
       "Eric Chernoff <ericschernoff@gmail.com>",
       "estrabd <estrabd@gmail.com>"
    ],
-   "x_serialization_backend" : "JSON::PP version 2.27400_02",
+   "x_serialization_backend" : "JSON::PP version 4.02",
    "x_static_install" : 1
 }

@@ -490,7 +490,7 @@ sub b2_upload_large_file {
 	}
 
 	# protect my sanity...
-	my ($bucket_name, $file_contents_part, $file_location, $large_file_id, $part_number, $remaining_file_size, $sha1_array, $size_sent, $stat, @sha1_array);
+	my ($bucket_name, $file_contents_part, $file_location, $large_file_id, $part_number, $remaining_file_size, $sha1_array, $size_sent, $stat);
 	$file_location = $args{file_location};
 	$bucket_name = $args{bucket_name};
 
@@ -524,7 +524,6 @@ sub b2_upload_large_file {
 		},
 	);
 
-
 	# these are all needed for each b2_upload_part web call
 	$large_file_id = $self->{b2_response}{fileId};
 	return if !$large_file_id; # there was an error in the request
@@ -533,11 +532,11 @@ sub b2_upload_large_file {
 	open(FH, $file_location);
 
 	$remaining_file_size = $stat->size;
+
 	$part_number = 1;
 
 	# cycle thru each chunk of the file
 	while ($remaining_file_size >= 0) {
-
 		# how much to send?
 		if ($remaining_file_size < $self->{recommended_part_size} ) {
 			$size_sent = $remaining_file_size;
@@ -561,16 +560,18 @@ sub b2_upload_large_file {
 		# upload that part
 		$self->b2_talker(
 			'url' => $self->{b2_response}{uploadUrl},
-			'Authorization' => $self->{b2_response}{authorizationToken},
-			'X-Bz-Content-Sha1' => $sha1_array[-1],
-			'X-Bz-Part-Number' => $part_number,
-			'Content-Length' => $size_sent,
+			'authorization' => $self->{b2_response}{authorizationToken},
+			'special_headers' => {
+				'X-Bz-Content-Sha1' => $$sha1_array[-1],
+				'X-Bz-Part-Number' => $part_number,
+				'Content-Length' => $size_sent,
+			},
 			'file_contents' => $file_contents_part,
 		);
 
 		# advance
 		$part_number++;
-		$remaining_file_size =- $self->{recommended_part_size} ;
+		$remaining_file_size -= $self->{recommended_part_size} ;
 	}
 
 	# close the file
@@ -578,7 +579,7 @@ sub b2_upload_large_file {
 
 	# and tell B2
 	$self->b2_talker(
-		'url' => 'https://api.backblazeb2.com/b2api/v2/b2_finish_large_file',
+		'url' => $self->{api_url}.'/b2api/v2/b2_finish_large_file',
 		'authorization' => $self->{account_authorization_token},
 		'post_params' => {
 			'fileId' => $large_file_id,
