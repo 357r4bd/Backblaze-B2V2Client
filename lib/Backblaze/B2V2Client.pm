@@ -14,6 +14,7 @@ use WWW::Mechanize;
 
 # I wish I could apply this to my diet.
 use strict;
+use warnings;
 
 # object constructor; will automatically authorize this session
 sub new {
@@ -825,6 +826,21 @@ Key again, so copy it immediately.
 
 Please store the Application Key pair in a secure way, preferably encrypted
 when not in use by your software.
+
+=head2 New: b2_client Command Line Utility
+
+Backblaze::B2V2Client now includes the 'b2_client' command line utility to
+easily download or upload files from B2.  Please execute 'b2_client help'
+for more details, and here are a few examples:
+
+	# download a file to current directory
+	b2_client get MyPictures FamilyPhoto.jpg
+	
+	# download a file to a target directory
+	b2_client get MyPictures FamilyPhoto.jpg /home/ginger/photos
+	
+	# upload a file to B2
+	b2_client put MyPictures /home/ginger/photos/AnotherFamilyPhoto.jpg
 
 =head2 BackBlaze B2 also has a S3-compatible API
 
