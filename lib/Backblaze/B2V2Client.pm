@@ -752,10 +752,6 @@ __END__
 
 Backblaze::B2V2Client - Client library for the Backblaze B2 Cloud Storage Service V2 API.
 
-=head1 VERSION
-
-1.0 - Initial working version.
-
 =head1 SYNOPSIS
 
 	use Backblaze::B2V2Client;
