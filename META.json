@@ -58,7 +58,7 @@
          }
       }
    },
-   "release_status" : "unstable",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/ericschernoff/Backblaze-B2V2Client/issues"
@@ -72,9 +72,6 @@
    },
    "version" : "1.4",
    "x_contributors" : [
-      "Eric Chernoff <eric@laravel.weaverstreet.net>",
-      "Eric Chernoff <eric@mail.weaverqueue.com>",
-      "Eric Chernoff <eric@weaverstreet.net>",
       "Eric Chernoff <ericschernoff@gmail.com>",
       "estrabd <estrabd@gmail.com>"
    ],
